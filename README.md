@@ -80,3 +80,7 @@ Planned improvements include:
 - exploring alternative machine learning methods beyond the current XGBoost setup
 - adding stronger text and image representations
 - testing multimodal deep learning models for better virality prediction
+
+## Notes
+
+The current codebase is still under active development. Some file paths and directory settings are based on personal/local environments, so the project is not yet fully configured for one-click reproducibility across different machines. Users may need to adjust paths and setup details based on their own system before running the code.
