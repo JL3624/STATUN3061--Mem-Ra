@@ -45,8 +45,6 @@ The model is run in batches on both text sources. For each input, we convert the
 - `is_pos`: binary indicator for positive sentiment
 - `is_neg`: binary indicator for negative sentiment
 
-These features are saved to `bert_sentiment.csv` so they can be reused without rerunning inference.
-
 ## Modeling
 
 ### Baseline
