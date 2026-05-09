@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>May the F1 Be With You: Predicting Reddit Meme Virality with Multimodal Machine Learning</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      background: #fff;
+      color: #111;
+      line-height: 1.8;
+    }
+
+    nav {
+      border-bottom: 2px solid #111;
+      padding: 1rem 0 1.5rem 0;
+      margin-bottom: 2rem;
+      font-family: Arial, sans-serif;
+      font-size: 0.85rem;
+    }
+
+    nav a {
+      color: #111;
+      text-decoration: none;
+      margin-right: 1rem;
+      font-size: 0.85rem;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .course-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-family: Arial, sans-serif;
+      font-size: 0.95rem;
+      color: #444;
+      margin-bottom: 1rem;
+    }
+
+    .meta {
+      font-family: Arial, sans-serif;
+      font-size: 0.8rem;
+      color: #777;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .authors {
+      font-family: Arial, sans-serif;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .abstract {
+      border: 1px solid #ccc;
+      padding: 1rem 1.2rem;
+      margin-bottom: 2rem;
+      background: #f9f9f9;
+    }
+
+    .abstract-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .abstract p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-top: 2.5rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.3rem;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    h4 {
+      font-size: 0.95rem;
+      margin-top: 1.2rem;
+      margin-bottom: 0.3rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    .fig {
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+
+    .fig img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+      background: #fff;
+    }
+
+    .fig-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.3rem;
+    }
+
+    .fig-caption {
+      font-family: Arial, sans-serif;
+      font-size: 0.78rem;
+      color: #555;
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+
+    .fig-note {
+      font-family: Arial, sans-serif;
+      font-size: 0.72rem;
+      color: #666;
+      margin-top: 0.4rem;
+      max-width: 540px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    svg {
+      border: 1px solid #ddd;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: Arial, sans-serif;
+      font-size: 0.82rem;
+      margin: 1.2rem 0;
+    }
+
+    th {
+      background: #111;
+      color: #fff;
+      padding: 0.5rem 0.7rem;
+      text-align: left;
+    }
+
+    td {
+      padding: 0.45rem 0.7rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+      background: #f5f5f5;
+    }
+
+    .table-note {
+      font-family: Arial, sans-serif;
+      font-size: 0.75rem;
+      color: #555;
+      font-style: italic;
+      margin-top: -0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .equation {
+      font-family: "Courier New", monospace;
+      font-size: 0.9rem;
+      background: #f5f5f5;
+      border-left: 3px solid #ccc;
+      padding: 0.5rem 1rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+
+    .ref-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .ref-list li {
+      font-family: Arial, sans-serif;
+      font-size: 0.78rem;
+      color: #444;
+      padding: 0.35rem 0 0.35rem 2rem;
+      position: relative;
+      border-bottom: 1px solid #eee;
+    }
+
+    footer {
+      border-top: 1px solid #ccc;
+      margin-top: 3rem;
+      padding-top: 1rem;
+      font-family: Arial, sans-serif;
+      font-size: 0.78rem;
+      color: #777;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#background">Background</a>
+    <a href="#hypothesis">Hypothesis</a>
+    <a href="#data">Data</a>
+    <a href="#modeling">Modeling Approach</a>
+    <a href="#results">Results</a>
+    <a href="#discussion">Discussion</a>
+    <a href="#references">References</a>
+  </nav>
+
+<div class="course-label">Project Report · Applied Machine Learning · Spring 2026 · May 7, 2026</div>
+
+<h1>May the F1 Be With You: Predicting Reddit Meme Virality with Multimodal Machine Learning</h1>
+
+<p class="subtitle">A multimodal machine learning approach to predicting Reddit meme virality using vision encoders, transformer language models, and ensemble methods.</p>
+
+<div class="meta">
+  <div class="authors">Jiawei Lou and Ariela Lopez</div>
+</div>
+
+<div class="abstract">
+  <div class="abstract-label">Abstract</div>
+  <p>
+    We predict Reddit meme virality as a multimodal binary classification task: given a meme's image, title, OCR-extracted text, and post-time metadata, we predict whether it lands in the top 25% of upvotes. Using a temporally held-out test set of 608 posts across seven subreddits, we evaluate models ranging from a metadata-only baseline to a stacking ensemble of six learners over sBERT text and CLIP image embeddings. Our best model reaches ROC-AUC 0.776 on a per-subreddit virality target, a meaningful improvement over the 0.537 baseline. The largest single gain comes from subreddit-relative feature engineering rather than from any embedding modality, suggesting that <em>community context</em>, not just content, drives meme virality on Reddit.
+  </p>
+</div>
+
+<h2 id="background">1. Background</h2>
+
+<h3>1.1 Internet Memes and Virality</h3>
+<p>
+  Internet memes combine image, text, and audio to communicate an idea to its intended audience, usually some form of humor. The term originates from Dawkins (2006), who used "memes" to describe the spread of culture from mind to mind; researchers often use the two terms interchangeably despite the technical distinction between digitally edited content and the broader diffusion of sociocultural ideas (Adiga and K., 2024). Throughout this project, "meme" refers to Internet memes specifically. Berger's STEPPS framework (Marino, 2022) characterizes viral content as socially rewarding to share, environmentally triggered, emotionally evocative, easily understood, practically useful, and story-driven, dynamics that extend beyond the digital sphere, as seen in religious COVID-era memes spread on WhatsApp that reinforced lockdown compliance (Adiga and K., 2024). Prior work has explored virality through both content features and platform structure, but little of it has done so on Reddit, a heavily participatory platform whose subreddit structure makes audience explicit.
+</p>
+
+<h3>1.2 Computational Approaches to Virality Prediction</h3>
+<p>
+  Research on memes seemed to gain more attention after the pandemic, specifically trying to determine whether memes as a form of media helped people cope during a long period of isolation (Myrick et al., 2022). Across the prior literature, memes have been explored using qualitative, quantitative, and mixed methods (Lande et al., 2026). One type of exploration done by Weng et al. (2014) focused on predicting virality through early spread patterns, exploring whether three features of the underlying network could predict virality of memes two months in advance. On the other hand, Ling et al. (2021) used machine learning to distinguish between memes that are likely to go viral and those that are not, successfully predicting over 80% of viral memes on Reddit and Twitter. Moving away from these quantitative approaches, Malodia et al. (2022) used interviews with stakeholders, including users, influencers, and brand managers, in an effort to determine the impact of viral memes in marketing. They found a significant relationship between content metrics such as relevance and whether memes were spread. As described above, there are various avenues to explore virality in memes, highlighting how further research is needed to understand all its components.
+</p>
+
+<h3>1.3 Memes on Reddit</h3>
+<p>
+  Researchers have started looking to Reddit to get new insights into what makes memes go viral (Sah and Jordan, 2025). With over 2.2 million subreddits as of 2025 (Curry, 2026), the platform organizes users into communities focused on specific, sometimes niche subjects. These groups are monitored by moderators who establish rules and guidelines, further building this sense of community. Interactions with posts are formed through a voting system where users can upvote a post, therefore pushing it to the top of the feed. This voting mechanism highlights Reddit's highly participatory nature. Prior research seems to heavily focus on a single domain rather than across subreddits. One example is Jo (2025), who studied subreddits such as r/PoliticalHumor and r/PoliticalMemes to understand political discussion. Overall, the literature does have interesting findings on specific spheres, but there is a lack of studies on how virality occurs broadly.
+</p>
+
+<h3>1.4 Positioning and Research Gap</h3>
+<p>
+  While prior research has found valuable insights on predicting virality through content, underlying network, and categorization, Reddit has been underexplored in relation to its unique features. To bridge this gap, our study uses memes from a wide variety of subreddits and explores correlations between the features and upvotes, specifically looking to see whether predictions differ across subreddits. We also explore whether a model solely using the textual components could compete against a more multimodal model.
+</p>
+
+<h2 id="hypothesis">2. Hypothesis and Assumptions</h2>
+
+<h3>2.1 Hypothesis</h3>
+<p>
+  We hypothesize that subreddit identity is a major driver of meme virality on Reddit, as some topics are more likely to have more or less controversy. Additionally, we expect that combining subreddit identity and multimodal meme content, including image or text embeddings, will predict top-25% upvote performance better than metadata alone, because subreddit context and content quality are jointly necessary for virality.
+</p>
+
+<h3 id="assumptions">2.2 Assumptions</h3>
+<p>
+  <strong>Subreddit as a stable categorical feature.</strong> We assume that subreddits are a stable and fixed category that will not be changed. Moreover, community norms and engagement behaviors remain relatively consistent over the collection period. If a subreddit's culture or moderation policy shifted significantly during this period, the relationship between subreddit identity and virality learned on the training set may not transfer to the test set.
+</p>
+<p>
+  <strong>Pre-publication features only.</strong> We assume that a useful virality predictor must rely only on information available at the moment of posting. Therefore, we exclude post-hoc engagement signals, number of comments and upvote ratio, from the feature set, despite their strong correlation with upvotes (r = 0.574 and r = 0.213 respectively). The Author karma is similarly treated with caution, as it was scraped at collection time rather than at post time and may include karma earned after the meme was published.
+</p>
+
+<h2 id="data">3. Data</h2>
+
+<h3>3.1 Dataset</h3>
+<p>
+  A dataset of 4,821 Reddit memes from seven subreddits, including r/Animemes, r/dankmemes, and r/ProgrammerHumor, is used in our project. These memes were created from April 21, 2024, to April 4, 2025. Twenty-one features are included for each meme, such as the author, upvotes, and text extracted from the image using Tesseract OCR. The dataset contains no missing values across all 21 columns. An example of a meme from this dataset is displayed in Figure 1.
+</p>
+
+<div class="fig">
+  <div class="fig-label">Figure 1</div>
+  <img src="sample_meme.png" alt="Example meme from the dataset" style="max-width:50%;" />
+  <div class="fig-caption">Meme from r/Funnymemes with 78 upvotes.</div>
+</div>
+
+<h3>3.2 Exploratory Data Analysis</h3>
+<p>
+  Our EDA shows three main patterns that motivated the modeling design.
+</p>
+<p>
+  First, upvotes are highly right-skewed: the mean number of upvotes is 1,504.5, while the median is only 240 and the maximum reaches 62,256. Because a small number of extreme viral posts would dominate a regression objective, we frame the task as binary classification rather than predicting raw upvote counts (see Section 3.5 for the threshold definition).
+</p>
+<p>
+  Second, virality differs substantially across subreddits. For example, r/Funnymemes has the lowest viral rate at 14.1%, while r/ProgrammerHumor has the highest at 32.3%. This suggests that subreddit context matters, motivating subreddit-relative features and a local per-subreddit virality target.
+</p>
+
+<div class="fig">
+  <div class="fig-label">Figure 2</div>
+  <img src="viral_subreddit.png" alt="Viral rate by subreddit" style="max-width:70%;" />
+  <div class="fig-caption">Viral rate by subreddit.</div>
+  <div class="fig-note">
+    <em>Note.</em> Share of posts in each subreddit that qualify as viral (top 25% of upvotes overall, &ge; 1,202). Computed on the full pre-drop dataset (n = 4,821). Dashed line marks the overall viral rate (25.0%).
+  </div>
+</div>
+
+<p>
+  Third, simple surface-level text features are weak predictors: title length has correlation r = &minus;0.120 with upvotes, and OCR text length has correlation r = 0.019. Sentiment features also show near-zero correlations with log upvotes. In contrast, number of comments and upvote ratio are strongly correlated with upvotes, but they are post-publication engagement signals and are excluded from our feature set (see Section 2.2).
+</p>
+
+<h3>3.3 Data Cleaning</h3>
+
+<h4>3.3.1 Temporal Imbalance</h4>
+<p>
+  While examining the temporal distribution of the dataset, we found a significant imbalance in the posting dates. Figure 3 shows the monthly distribution of memes in the dataset. Furthermore, we decided that a random split may not be appropriate, since very similar posts from the same time period could appear in both the training and test sets. Instead, we decided to use a temporal split to better evaluate future generation in a setting more aligned with real-life prediction of viral memes.
+</p>
+
+<div class="fig">
+  <div class="fig-label">Figure 3</div>
+  <img src="rightcensoring.png" alt="Histogram of number of memes by month" style="max-width:75%;" />
+  <div class="fig-caption">Histogram of Number of Memes by Month.</div>
+</div>
+
+<h4>3.3.2 Right-Censoring Guard</h4>
+<p>
+  With worries that recent posts might not have enough time to accumulate upvotes, we examine the percentage of viral posts (defined by the 75th percentile of all posts). Therefore, we drop posts less than 3 days old at scrape time, removing 772 posts. The final dataset contains 4,049 posts.
+</p>
+
+<h3>3.4 Data Split</h3>
+<p>
+  To evaluate our model in a way that reflects real-world deployment, we adopt a pure temporal split rather than a random shuffle. The full dataset is sorted chronologically by upload time and partitioned into 70% training, 15% validation, and 15% test, so that the model is trained only on memes posted before those in the validation and test sets. The split of data is in Table 1.
+</p>
+
+<p><strong>Table 1.</strong> Temporal Train-Validation-Test Split.</p>
+<table>
+  <tr>
+    <th>Split</th>
+    <th>Number of Posts</th>
+    <th>Date Range</th>
+    <th>Viral Rate</th>
+  </tr>
+  <tr>
+    <td>Train</td>
+    <td>2,834</td>
+    <td>2024-04-21 to 2025-03-27</td>
+    <td>0.267</td>
+  </tr>
+  <tr>
+    <td>Validation</td>
+    <td>607</td>
+    <td>2025-03-27 to 2025-03-30</td>
+    <td>0.264</td>
+  </tr>
+  <tr>
+    <td>Test</td>
+    <td>608</td>
+    <td>2025-03-30 to 2025-04-01</td>
+    <td>0.229</td>
+  </tr>
+</table>
+
+<h3 id="viral-definition">3.5 Defining a Viral Meme</h3>
+<p>
+  Because upvotes are highly right-skewed, we model virality as a binary classification task instead of predicting raw upvote counts. In the initial full-dataset EDA, the 75th percentile was 1,202 upvotes, corresponding to a 25% viral class. For final modeling, however, we recompute the threshold using only the training set after right-censoring removal and temporal splitting, giving a global viral threshold of 1,376 upvotes (Figure 4). This avoids using information from the validation and test periods when defining the target.
+</p>
+<p>
+  Since subreddit communities have different baseline engagement levels, we also define a local viral target using the 75th percentile within each subreddit, again based only on the training set. The global target measures overall Reddit-wide popularity, while the local target measures whether a meme performs unusually well within its own community.
+</p>
+
+<div class="fig">
+  <div class="fig-label">Figure 4</div>
+  <img src="upvotedistri.png" alt="Upvote distribution post right-censoring removal" style="max-width:75%;" />
+  <div class="fig-caption">Upvote distribution post right-censoring removal.</div>
+  <div class="fig-note">
+    <em>Note.</em> Histogram of upvotes on a log scale (n = 4,049). The dotted line marks the median (277), the dashed line marks the mean (1,551), and the solid line marks the training-set 75th percentile (1,376), used as the global viral threshold for modeling.
+  </div>
+</div>
+
+<h2 id="modeling">4. Modeling Approach</h2>
+<p>
+  We frame meme virality prediction as a binary classification task with the global and local targets defined in Section 3.5. All thresholds and subreddit-level statistics are computed using the training set only.
+</p>
+
+<h3>4.1 Input</h3>
+<p>
+  Each model takes a feature vector constructed from post-time metadata, engineered subreddit-relative features, and multimodal embeddings. The metadata features include subreddit category, time of day, day of week, title length, OCR text length, post hour, and account age. We further add cyclical encodings of hour and day, within-subreddit z-scores and percentile ranks, distance from the subreddit's peak posting hour, and subreddit-level baseline viral rate computed from the training set. For content representation, we use sBERT embeddings for the title and OCR text and CLIP ViT-B/32 embeddings for the image. Each embedding block is reduced to 32 dimensions using PCA fitted only on the training set. The final full feature vector has 119 dimensions.
+</p>
+
+<h3>4.2 Output</h3>
+<p>
+  The model outputs a viral probability p&#770; &isin; [0, 1]. For classification metrics, we convert it to a binary prediction using threshold 0.5:
+</p>
+<div class="equation">
+  y&#770; = I(p&#770; &ge; 0.5)
+</div>
+
+<h3>4.3 Objective Function</h3>
+<p>
+  For the tree-based classifiers, the main objective is binary logistic loss with class re-weighting:
+</p>
+<div class="equation">
+  L(y, p&#770;) = &minus;w<sub>y</sub> [y log(p&#770;) + (1&minus;y) log(1&minus;p&#770;)]
+</div>
+<p>
+  where y is the true label, p&#770; is the predicted probability, and w<sub>y</sub> is the class weight. Since viral posts make up about one quarter of the training data, we use a larger weight for the viral class to reduce the effect of class imbalance. In the baseline setting, non-viral posts receive weight 1 and viral posts receive weight 3.
+</p>
+
+<h3>4.4 Models</h3>
+<p>
+  We compare seven models across four families (Table 2): a linear baseline, three gradient-boosted tree learners, two neural networks, and a stacking ensemble. The three boosting models share hyperparameters (max depth 4, learning rate 0.05) for fair comparison, and all models use class re-weighting to handle the 25% viral class imbalance.
+</p>
+<p>
+  The Late-Fusion Network (Figure 5) processes each modality through a dedicated tower and combines them via softmax gating that learns per-sample modality weights. The Stacking ensemble uses a Logistic Regression meta-learner trained on validation-set predictions, which can assign negative weights to base models whose errors are systematically anti-correlated with the target.
+</p>
+
+<p><strong>Table 2.</strong> Models compared in this study. All models are trained with class weighting and (where applicable) early stopping on the validation set.</p>
+<table>
+  <tr>
+    <th>Family</th>
+    <th>Model</th>
+    <th>Key Configuration</th>
+  </tr>
+  <tr>
+    <td>Linear</td>
+    <td>Logistic Regression</td>
+    <td>&ell;<sub>2</sub> (C = 0.5), class-balanced</td>
+  </tr>
+  <tr>
+    <td>Gradient-boosted trees</td>
+    <td>XGBoost</td>
+    <td>depth 4, lr 0.05, &alpha; = 0.1, &lambda; = 1.0</td>
+  </tr>
+  <tr>
+    <td>Gradient-boosted trees</td>
+    <td>LightGBM</td>
+    <td>depth 4, lr 0.05, 15 leaves</td>
+  </tr>
+  <tr>
+    <td>Gradient-boosted trees</td>
+    <td>CatBoost</td>
+    <td>depth 4, lr 0.05, L<sub>2</sub> = 3.0</td>
+  </tr>
+  <tr>
+    <td>Neural networks</td>
+    <td>MLP</td>
+    <td>3 layers, 128 hidden, dropout 0.3</td>
+  </tr>
+  <tr>
+    <td>Neural networks</td>
+    <td>Late-Fusion NN</td>
+    <td>4 modality towers, softmax gating</td>
+  </tr>
+  <tr>
+    <td>Ensemble</td>
+    <td>Stacking</td>
+    <td>LR meta-learner over 6 base models</td>
+  </tr>
+</table>
+
+<div class="fig">
+  <div class="fig-label">Figure 5</div>
+  <svg viewBox="0 0 560 320" width="560" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif" font-size="11">
+    <!-- Input boxes -->
+    <rect x="10"  y="10" width="110" height="30" fill="#eee" stroke="#999"/>
+    <text x="65"  y="30" text-anchor="middle" font-size="10">Metadata (23)</text>
+    <rect x="140" y="10" width="110" height="30" fill="#eee" stroke="#999"/>
+    <text x="195" y="30" text-anchor="middle" font-size="10">sBERT title (768)</text>
+    <rect x="270" y="10" width="110" height="30" fill="#eee" stroke="#999"/>
+    <text x="325" y="30" text-anchor="middle" font-size="10">sBERT OCR (768)</text>
+    <rect x="400" y="10" width="120" height="30" fill="#eee" stroke="#999"/>
+    <text x="460" y="30" text-anchor="middle" font-size="10">CLIP image (512)</text>
+
+    <rect x="10"  y="65" width="110" height="40" fill="#d6e8ff" stroke="#5599cc"/>
+    <text x="65"  y="89" text-anchor="middle" font-size="10">Tower<tspan font-style="italic">m</tspan></text>
+    <rect x="140" y="65" width="110" height="40" fill="#d6e8ff" stroke="#5599cc"/>
+    <text x="195" y="89" text-anchor="middle" font-size="10">Tower<tspan font-style="italic">t</tspan></text>
+    <rect x="270" y="65" width="110" height="40" fill="#d6e8ff" stroke="#5599cc"/>
+    <text x="325" y="89" text-anchor="middle" font-size="10">Tower<tspan font-style="italic">o</tspan></text>
+    <rect x="400" y="65" width="120" height="40" fill="#d6e8ff" stroke="#5599cc"/>
+    <text x="460" y="89" text-anchor="middle" font-size="10">Tower<tspan font-style="italic">i</tspan></text>
+
+    <text x="65"  y="125" text-anchor="middle" font-size="10" fill="#555">32</text>
+    <text x="195" y="125" text-anchor="middle" font-size="10" fill="#555">32</text>
+    <text x="325" y="125" text-anchor="middle" font-size="10" fill="#555">32</text>
+    <text x="460" y="125" text-anchor="middle" font-size="10" fill="#555">32</text>
+
+    <line x1="65"  y1="105" x2="65"  y2="145" stroke="#999"/>
+    <line x1="195" y1="105" x2="195" y2="145" stroke="#999"/>
+    <line x1="325" y1="105" x2="325" y2="145" stroke="#999"/>
+    <line x1="460" y1="105" x2="460" y2="145" stroke="#999"/>
+
+    <rect x="60" y="145" width="420" height="35" fill="#fff3cd" stroke="#ccaa00"/>
+    <text x="270" y="167" text-anchor="middle" font-size="10">Concat (4 × 32)</text>
+
+    <rect x="150" y="205" width="240" height="35" fill="#ffe0e0" stroke="#cc6666"/>
+    <text x="270" y="223" text-anchor="middle" font-size="10">Softmax gate → modality weights g ∈ ℝ⁴</text>
+    <line x1="270" y1="180" x2="270" y2="205" stroke="#999"/>
+    <text x="350" y="200" font-size="9" fill="#555">Weighted concat</text>
+
+    <rect x="175" y="262" width="190" height="35" fill="#e0f5e0" stroke="#339933"/>
+    <text x="270" y="284" text-anchor="middle" font-size="10">MLP classifier</text>
+    <line x1="270" y1="240" x2="270" y2="262" stroke="#999"/>
+
+    <text x="270" y="314" text-anchor="middle" font-size="11" font-style="italic">p&#770; ∈ [0, 1]</text>
+    <line x1="270" y1="297" x2="270" y2="307" stroke="#999"/>
+
+    <line x1="65"  y1="40" x2="65"  y2="65" stroke="#999"/>
+    <line x1="195" y1="40" x2="195" y2="65" stroke="#999"/>
+    <line x1="325" y1="40" x2="325" y2="65" stroke="#999"/>
+    <line x1="460" y1="40" x2="460" y2="65" stroke="#999"/>
+  </svg>
+  <div class="fig-caption">
+    Architecture of the Late-Fusion Network. Each modality passes through a dedicated tower (linear → ReLU → dropout → linear) producing a 32-dimensional embedding. A softmax gating layer learns per-sample weights over the four modalities, and the weighted concatenation feeds an MLP classifier that outputs the viral probability.
+  </div>
+</div>
+
+<h2 id="results">5. Results</h2>
+
+<h3>5.1 Evaluation Setup</h3>
+<p>
+  We evaluate all models on a temporally held-out test set of 608 posts (March 30 to April 1, 2025), with model selection performed on a separate validation set of 607 posts. Because the viral class is imbalanced (approximately 25% of training posts), we report multiple complementary metrics. ROC-AUC is our primary metric, as it is threshold-independent and robust under class imbalance. We additionally report F1-viral to measure performance on the minority viral class, AUPRC to evaluate precision-recall tradeoffs, and accuracy as a reference against the majority-class baseline. To quantify uncertainty, we compute 95% confidence intervals via bootstrap resampling with 200 iterations on the test set. Finally, we break out per-subreddit F1-viral and ROC-AUC to check whether aggregate performance hides community-level differences.
+</p>
+
+<h3>5.2 Model Progression</h3>
+
+<p>
+  <strong>Feature ablation.</strong> We first hold the model fixed (XGBoost) and vary the feature set (Table 3, Figure 6). Starting from a majority-class baseline (AUC 0.500), adding seven raw metadata features lifts global AUC to 0.537. Adding cyclical time encodings and subreddit-relative features (z-scores, percentile ranks, and per-community baseline viral rates) further raises global AUC to 0.609 and local AUC to 0.675. Layering on multimodal embeddings (sBERT for text, CLIP for images) brings global AUC to its peak at 0.665.
+</p>
+
+<div class="fig">
+  <div class="fig-label">Figure 6</div>
+  <img src="feature_ablation.png" alt="XGBoost ROC-AUC across cumulative feature sets" style="max-width:75%;" />
+  <div class="fig-caption">XGBoost ROC-AUC across cumulative feature sets.</div>
+  <div class="fig-note">
+    <em>Note.</em> XGBoost test ROC-AUC across cumulative feature sets. Error bars: 95% bootstrap CIs (200 iterations, n = 608).
+  </div>
+</div>
+
+<p><strong>Table 3.</strong> Feature ablation: XGBoost performance across feature sets.</p>
+<table>
+  <tr>
+    <th rowspan="2">Feature Set</th>
+    <th rowspan="2"># Feat.</th>
+    <th colspan="2">Global Target</th>
+    <th colspan="2">Local Target</th>
+  </tr>
+  <tr>
+    <th>AUC [95% CI]</th>
+    <th>F1-viral</th>
+    <th>AUC [95% CI]</th>
+    <th>F1-viral</th>
+  </tr>
+  <tr>
+    <td>Majority class</td>
+    <td>—</td>
+    <td>0.500</td>
+    <td>0.000</td>
+    <td>0.500</td>
+    <td>0.000</td>
+  </tr>
+  <tr>
+    <td>Metadata only</td>
+    <td>7</td>
+    <td>0.537 [0.485, 0.594]</td>
+    <td>0.324</td>
+    <td>0.537 [0.479, 0.601]</td>
+    <td>0.217</td>
+  </tr>
+  <tr>
+    <td>+ Cyclical &amp; subreddit-relative</td>
+    <td>23</td>
+    <td>0.609 [0.557, 0.661]</td>
+    <td>0.369</td>
+    <td>0.675 [0.616, 0.734]</td>
+    <td>0.325</td>
+  </tr>
+  <tr>
+    <td>+ sBERT title</td>
+    <td>55</td>
+    <td>0.601 [0.553, 0.653]</td>
+    <td>0.356</td>
+    <td>0.666 [0.612, 0.724]</td>
+    <td>0.300</td>
+  </tr>
+  <tr>
+    <td>+ sBERT title &amp; OCR</td>
+    <td>87</td>
+    <td>0.597 [0.540, 0.650]</td>
+    <td>0.372</td>
+    <td>0.677 [0.620, 0.740]</td>
+    <td>0.290</td>
+  </tr>
+  <tr>
+    <td>+ CLIP image</td>
+    <td>55</td>
+    <td>0.650 [0.602, 0.695]</td>
+    <td>0.393</td>
+    <td>0.660 [0.600, 0.720]</td>
+    <td>0.324</td>
+  </tr>
+  <tr>
+    <td><strong>+ All embeddings (full)</strong></td>
+    <td>119</td>
+    <td><strong>0.665</strong> [0.607, 0.710]</td>
+    <td><strong>0.392</strong></td>
+    <td><strong>0.677</strong> [0.618, 0.734]</td>
+    <td><strong>0.266</strong></td>
+  </tr>
+</table>
+<p class="table-note">All rows use XGBoost with class re-weighting and early stopping on the validation set; only the feature set varies. ROC-AUC reported with 95% bootstrap confidence intervals (200 iterations) on the test set (n = 608). Best result per target shown in bold.</p>
+
+<p>
+  <strong>Model comparison.</strong> We then hold the feature set fixed (full 119-dim multimodal) and vary the model family (Table 4). On the global target, <strong>CatBoost</strong> achieves the best single-model performance (AUC 0.671), narrowly edging out XGBoost and a Stacking ensemble. On the local target the picture changes: <strong>Stacking</strong> reaches AUC 0.776, our best result overall, suggesting that base learners capture complementary patterns when class imbalance is normalized within each subreddit. Logistic Regression underperforms on the local target (AUC 0.464), indicating that local virality requires non-linear interactions between modalities.
+</p>
+
+<p><strong>Table 4.</strong> Model comparison on the full multimodal feature set.</p>
+<table>
+  <tr>
+    <th rowspan="2">Model</th>
+    <th colspan="2">Global Target</th>
+    <th colspan="2">Local Target</th>
+  </tr>
+  <tr>
+    <th>AUC [95% CI]</th>
+    <th>F1-viral</th>
+    <th>AUC [95% CI]</th>
+    <th>F1-viral</th>
+  </tr>
+  <tr>
+    <td>Logistic Regression</td>
+    <td>0.611 [0.562, 0.670]</td>
+    <td>0.408</td>
+    <td>0.464 [0.409, 0.515]</td>
+    <td>0.252</td>
+  </tr>
+  <tr>
+    <td>LightGBM</td>
+    <td>0.603 [0.555, 0.651]</td>
+    <td>0.000</td>
+    <td>0.562 [0.501, 0.622]</td>
+    <td>0.000</td>
+  </tr>
+  <tr>
+    <td>MLP</td>
+    <td>0.591 [0.537, 0.636]</td>
+    <td>0.383</td>
+    <td>0.664 [0.608, 0.719]</td>
+    <td>0.330</td>
+  </tr>
+  <tr>
+    <td>XGBoost</td>
+    <td>0.665 [0.607, 0.710]</td>
+    <td>0.392</td>
+    <td>0.677 [0.618, 0.734]</td>
+    <td>0.266</td>
+  </tr>
+  <tr>
+    <td>Late-Fusion NN</td>
+    <td>0.630 [0.582, 0.677]</td>
+    <td>0.399</td>
+    <td>0.732 [0.678, 0.781]</td>
+    <td>0.355</td>
+  </tr>
+  <tr>
+    <td><strong>CatBoost</strong></td>
+    <td><strong>0.671</strong> [0.619, 0.713]</td>
+    <td><strong>0.432</strong></td>
+    <td>0.682 [0.615, 0.740]</td>
+    <td>0.364</td>
+  </tr>
+  <tr>
+    <td><strong>Stacking</strong></td>
+    <td>0.662 [0.604, 0.710]</td>
+    <td>0.403</td>
+    <td><strong>0.776</strong> [0.730, 0.817]</td>
+    <td><strong>0.425</strong></td>
+  </tr>
+</table>
+<p class="table-note">All models use the same 119-dimensional feature set (7 metadata + 16 engineered + 96 PCA-reduced multimodal embeddings). ROC-AUC reported with 95% bootstrap confidence intervals (200 iterations) on the test set (n = 608). Best result per target shown in bold.</p>
+
+<h3>5.3 Modality Importance</h3>
+<p>
+  Grouping XGBoost's gain-based feature importances by modality (Table 5) shows that the three content embedding blocks together account for ~81% of total importance, with CLIP image consistently the strongest at ~29%. Subreddit-relative features account for only ~9% but were the single largest contributor to AUC gains in our progression (Table 3, +0.07 global AUC), suggesting they re-express existing values rather than add new information. Cyclical time (3.5%) and title–OCR cosine similarity (0.7%) sit near the noise floor, supporting the view that posting time is at best a secondary signal and that title–image semantic alignment does not predict virality.
+</p>
+
+<p><strong>Table 5.</strong> Feature importance share by modality.</p>
+<table>
+  <tr>
+    <th>Modality</th>
+    <th>Global Target</th>
+    <th>Local Target</th>
+  </tr>
+  <tr>
+    <td><strong>CLIP image (PCA-32)</strong></td>
+    <td><strong>28.8%</strong></td>
+    <td><strong>29.6%</strong></td>
+  </tr>
+  <tr>
+    <td>sBERT OCR (PCA-32)</td>
+    <td>26.5%</td>
+    <td>26.3%</td>
+  </tr>
+  <tr>
+    <td>sBERT title (PCA-32)</td>
+    <td>26.1%</td>
+    <td>26.6%</td>
+  </tr>
+  <tr>
+    <td>Subreddit-relative (M2)</td>
+    <td>9.4%</td>
+    <td>7.5%</td>
+  </tr>
+  <tr>
+    <td>Raw metadata (M1)</td>
+    <td>5.0%</td>
+    <td>5.6%</td>
+  </tr>
+  <tr>
+    <td>Cyclical time (M1+)</td>
+    <td>3.5%</td>
+    <td>3.8%</td>
+  </tr>
+  <tr>
+    <td>Title–OCR cosine similarity</td>
+    <td>0.7%</td>
+    <td>0.7%</td>
+  </tr>
+</table>
+<p class="table-note">Gain-based feature importance from the full multimodal XGBoost, summed within each modality block and normalized to 100%.</p>
+
+<h3>5.4 Per-Subreddit Performance</h3>
+
+<div class="fig">
+  <div class="fig-label">Figure 7</div>
+  <img src="subreddit_performance.png" alt="Per-subreddit F1-viral and ROC-AUC on the global target" style="max-width:75%;" />
+  <div class="fig-caption">Per-subreddit F1-viral and ROC-AUC on the global target.</div>
+</div>
+
+<p>
+  Figure 7 is the per-subreddit breakdown, that reveals substantial variation hidden by aggregate metrics. F1-viral ranges from 0.176 (r/Funnymemes) to 0.455 (r/okbuddyretard), while ROC-AUC ranges from 0.582 to 0.685. The most notable pattern is r/shitposting (n = 216), which shows a clear divergence between the two metrics, strong ranking performance (AUC 0.685) but only moderate threshold-based classification (F1 0.396). We discuss the drivers of this variation in Section 6.5.
+</p>
+
+<h2 id="discussion">6. Discussion</h2>
+
+<h3>6.1 Key Findings</h3>
+<p>
+  Our results support the hypothesis that subreddit identity combined with multimodal content predicts virality better than metadata alone. Performance went from 0.538 ROC-AUC on metadata to 0.776 on the per-subreddit target with stacking, with non-overlapping bootstrap intervals. The more interesting result is how we got there. Subreddit-relative features (z-scores, percentile ranks, baseline viral rates) added +0.07 global AUC and +0.14 local AUC, which is more than the joint contribution of all three embedding modalities (+0.06).
+</p>
+
+<h3>6.2 Why Subreddit / Community Context Matters</h3>
+<p>
+  The biggest single lift came from feature engineering, not embeddings. We read this as evidence that on Reddit, virality is gated by community norms before it is gated by content quality. A 40-character title is short for r/ProgrammerHumor and long for r/shitposting. A 200-upvote post is exceptional in r/engineeringmemes and unremarkable in r/Funnymemes. A model that treats these on a single global scale will misread half of them, so re-expressing each post relative to its own community recovers signal that absolute features hide. This fits Berger's STEPPS framing of "social currency" as something inherently local to an audience.
+</p>
+
+<h3>6.3 Why Stacking Wins on the Local Target</h3>
+<p>
+  The Stacking ensemble's meta-learner weights illuminate why the model gains so much on the local target. The Late-Fusion network receives the highest positive weight (+2.50), reflecting its strong standalone performance (AUC 0.732). XGBoost (+1.92) and MLP (+1.87) follow, with CatBoost contributing more modestly (+1.08).
+</p>
+
+<div class="fig">
+  <div class="fig-label">Figure 8</div>
+  <img src="stacking.png" alt="Stacking meta-learner weights on the local target" style="max-width:75%;" />
+  <div class="fig-caption">Stacking meta-learner weights on the local target.</div>
+</div>
+
+<p>
+  Two weights stand out. Logistic Regression receives a substantial <em>negative</em> weight (&minus;1.65), even though it is a base learner that the ensemble was supposed to combine. Its single-model local AUC (0.464) is below chance, meaning its predictions are systematically anti-correlated with the truth, so the meta-learner repurposes it as a corrective signal rather than a positive contributor. LightGBM, which produces no positive predictions at threshold 0.5 (F1 = 0.000), receives a near-zero weight (+0.08) and is effectively ignored.
+</p>
+<p>
+  This is the kind of behavior stacking is designed for: rather than averaging six imperfect predictors, the meta-learner identifies which base models are reliable, which are reliably wrong, and which can be discarded. The result is a 0.776 local AUC, our best test-set performance and a meaningful jump over the strongest individual base learner (Late-Fusion at 0.732).
+</p>
+
+<h3>6.4 Modality Contributions</h3>
+<p>
+  The three embedding blocks account for 81% of XGBoost's gain importance, but gain scales with feature count: our 96 PCA dimensions absorb more split mass than 16 engineered features even when their predictive value is similar.
+</p>
+
+<h3 id="per-subreddit-behavior">6.5 Per-Subreddit Behavior</h3>
+<p>
+  Two factors organize the per-subreddit results (Figure 7): class balance and visual coherence. r/Funnymemes has the lowest training viral rate (14.1%) and the lowest test F1 (0.176); with few positives and no consistent visual identity, the model defaults to the majority class. r/okbuddyretard and r/dankmemes have distinctive templates that give CLIP cleaner boundaries, lifting both above 0.43 F1.
+</p>
+<p>
+  r/shitposting is the most interesting case: high AUC (0.685) but moderate F1 (0.396). The model ranks posts well but cannot find a single global threshold that fits its bimodal upvote distribution. This is exactly the failure mode the local target is designed to address, and stacking on the local target reaches 0.776 AUC. We note that r/shitposting entered our dataset later than other communities (training data starting 2025-03-26), giving the model a shorter window to learn its conventions, though strong ranking performance suggests this did not prevent the model from capturing the relative ordering of posts.
+</p>
+
+<h3>6.6 Limitations</h3>
+<p>
+  Our test window covers only the final two to three days of collection, so we evaluate generalization to the immediate future rather than to longer-term shifts in meme culture; rolling-window evaluation is a natural extension. The seven subreddits we cover are diverse in tone and style but do not span the full breadth of Reddit, and generalization to non-English communities or text-first formats would need new data. Temporal coverage is also uneven across subreddits, with only r/engineeringmemes spanning a full year, which we mitigated through a temporal split that respects each community's available history. Finally, we deliberately excluded post-publication signals like comment count and upvote ratio to keep the prediction setting deployment-faithful, so our numbers should be read as a lower bound on what richer post-time author features could achieve.
+</p>
+
+<h3>6.7 Future Work</h3>
+<p>
+  Our dataset spans only seven subreddits over a single year, with most posts concentrated in March 2025; expanding to a broader range of communities and a longer collection window would test whether our findings generalize. Incorporating real-time context such as trending events, popular meme templates, or recent subreddit activity could also capture the bursty nature of viral content that static features miss.
+</p>
+
+<h2 id="references">References</h2>
+<ol class="ref-list">
+  <li>Adiga, P. G., &amp; K., P. (2024). Humor, politics and the global north: A systematic literature review of internet memes. <em>Internet Reference Services Quarterly</em>, 28(3), 263–281. https://doi.org/10.1080/10875301.2024.2335920</li>
+  <li>Curry, D. (2026, January 7). Reddit Revenue and Usage Statistics (2026). <em>Business of Apps</em>. https://www.businessofapps.com/data/reddit-statistics/</li>
+  <li>Dawkins, R. (2006). <em>The Selfish Gene</em>. Oxford University Press.</li>
+  <li>Jo, M. (2025). Memes for rapid engagement: A study of memes in an intense and time-sensitive political discourse on Reddit. <em>First Monday</em>, 30(8). https://doi.org/10.5210/fm.v30i8.14179</li>
+  <li>Lande, R. S., Bhagat, A. P., &amp; Khodke, P. A. (2026). Methodologies for visual memes content analysis. In <em>Smart Trends in Computing and Communications. SmartCom 2025. Lecture Notes in Networks and Systems</em>, vol. 1458. Springer, Singapore. https://doi.org/10.1007/978-981-96-7499-2_34</li>
+  <li>Ling, C., AbuHilal, I., Blackburn, J., De Cristofaro, E., Zannettou, S., &amp; Stringhini, G. (2021). Dissecting the meme magic: Understanding indicators of virality in image memes. <em>Proceedings of the ACM on Human-Computer Interaction</em>, 5(CSCW1), 1–24. https://doi.org/10.1145/3449155</li>
+  <li>Malodia, S., Dhir, A., Bilgihan, A., Sinha, P., &amp; Tikoo, T. (2022). Meme marketing: How marketers can drive better engagement using viral memes? <em>Psychology &amp; Marketing</em>, 39, 1775–1801. https://doi.org/10.1002/mar.21702</li>
+  <li>Marino, G. (2022). Semiotics of virality. <em>Signata</em>, 13. https://doi.org/10.4000/signata.3936</li>
+  <li>Myrick, J. G., Nabi, R. L., &amp; Eng, N. J. (2022). Consuming memes during the COVID pandemic: Effects of memes and meme type on COVID-related stress and coping efficacy. <em>Psychology of Popular Media</em>, 11(3), 316. https://doi.org/10.1037/ppm0000371</li>
+  <li>Sah, T., &amp; Jordan, K. (2025). Decoding reddit memes virality. <em>International Journal of Data Science and Analytics</em>, 20(6), 5321–5325. https://doi.org/10.1007/s41060-025-00772-5</li>
+  <li>Weng, L., Menczer, F., &amp; Ahn, Y.-Y. (2014). Predicting successful memes using network and community structure. <em>Proceedings of the International AAAI Conference on Web and Social Media</em>, 8(1), 535–544. https://doi.org/10.1609/icwsm.v8i1.14530</li>
+</ol>
+
+<footer>
+  Applied Machine Learning · Spring 2026 · Jiawei Lou and Ariela Lopez
+</footer>
+
+</body>
+</html>
