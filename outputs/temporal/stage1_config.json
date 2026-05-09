@@ -1,0 +1,57 @@
+{
+  "created": "2026-05-08T22:39:47.195015",
+  "split_strategy": "temporal_70_15_15_with_censoring_guard",
+  "min_post_age_days_at_scrape": 3,
+  "global_threshold": 1376.0,
+  "local_thresholds": {
+    "Animemes": 1390.5,
+    "Funnymemes": 592.5,
+    "ProgrammerHumor": 2431.5,
+    "dankmemes": 1709.0,
+    "engineeringmemes": 934.25,
+    "okbuddyretard": 1558.5,
+    "shitposting": 25927.5
+  },
+  "targets": [
+    "is_viral_global",
+    "is_viral_local"
+  ],
+  "safe_features_baseline": [
+    "Category",
+    "Time of Day",
+    "post_day",
+    "title_len",
+    "ocr_len",
+    "post_hour",
+    "account_age_days"
+  ],
+  "leakage_forbidden": [
+    "Upvotes",
+    "log_upvotes",
+    "is_viral",
+    "is_viral_global",
+    "is_viral_local",
+    "Number of Comments",
+    "Upvote Ratio"
+  ],
+  "likely_risky": [
+    "Total Karma",
+    "Comment Karma",
+    "Author",
+    "File Name",
+    "Post URL",
+    "Cake Day"
+  ],
+  "baseline_results": {
+    "global": {
+      "test_AUC": 0.5382607588489942,
+      "test_AUPRC": 0.25075901824116464,
+      "test_F1_viral": 0.3269230769230769
+    },
+    "local": {
+      "test_AUC": 0.5374302874302874,
+      "test_AUPRC": 0.1574629352800424,
+      "test_F1_viral": 0.21830985915492956
+    }
+  }
+}
